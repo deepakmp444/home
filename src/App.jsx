@@ -1,35 +1,28 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import Header from "./component/Header";
+import Swiper from "./page/Swiper";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const cards = [
+    { image: 'https://via.placeholder.com/150', title: 'Card 1', description: 'Description for Card 1' },
+    { image: 'https://via.placeholder.com/150', title: 'Card 2', description: 'Description for Card 2' },
+    { image: 'https://via.placeholder.com/150', title: 'Card 3', description: 'Description for Card 3' },
+    { image: 'https://via.placeholder.com/150', title: 'Card 4', description: 'Description for Card 4' },
+    { image: 'https://via.placeholder.com/150', title: 'Card 5', description: 'Description for Card 5' },
+    { image: 'https://via.placeholder.com/150', title: 'Card 6', description: 'Description for Card 6' },
+    { image: 'https://via.placeholder.com/150', title: 'Card 7', description: 'Description for Card 7' },
+    { image: 'https://via.placeholder.com/150', title: 'Card 8', description: 'Description for Card 8' },
+    { image: 'https://via.placeholder.com/150', title: 'Card 9', description: 'Description for Card 9' },
+    { image: 'https://via.placeholder.com/150', title: 'Card 10', description: 'Description for Card 10' },
+    { image: 'https://via.placeholder.com/150', title: 'Card 11', description: 'Description for Card 11' },
+    { image: 'https://via.placeholder.com/150', title: 'Card 12', description: 'Description for Card 12' },
+  ];
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div>
+      <Header />
+      <Swiper cards={cards} />
+    </div>
+  );
 }
 
-export default App
+export default App;

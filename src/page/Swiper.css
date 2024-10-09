@@ -1,0 +1,68 @@
+.swiper-container {
+    position: relative;
+    width: 100%;
+    margin: auto;
+    overflow: hidden;
+    padding: 20px;
+  }
+  
+  .swiper-wrapper {
+    display: flex;
+    transition: transform 0.5s ease-in-out; /* Smooth slide animation */
+  }
+  
+  .swiper-card {
+    flex: 0 0 25%; /* Ensures exactly four cards are displayed per row */
+    box-sizing: border-box; /* Includes padding and borders in width calculation */
+    background-color: #f0f0f0;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    margin: 0; /* Remove margins to avoid overflow issues */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  .card-image {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 5px;
+  }
+  
+  .card-title {
+    font-size: 18px;
+    margin: 10px 0;
+  }
+  
+  .card-description {
+    font-size: 14px;
+    color: #555;
+  }
+  
+  .pagination-controls {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+  }
+  
+  .pagination-button,
+  button {
+    background-color: #333;
+    color: white;
+    border: none;
+    cursor: pointer;
+    padding: 8px 12px;
+    margin: 0 3px;
+    border-radius: 4px;
+  }
+  
+  button[disabled] {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  
+  .pagination-button.active {
+    background-color: #555;
+  }
+  
