@@ -1,5 +1,5 @@
 import Header from "./component/Header";
-import Swiper from "./page/Swiper";
+import ExcelCRUD from "./page/ExcelCRUD";
 
 function App() {
   const cards = [
@@ -248,7 +248,7 @@ function App() {
   return (
     <div>
       <Header />
-      <Swiper cards={cards} />
+      <ExcelCRUD />
     </div>
   );
 }
