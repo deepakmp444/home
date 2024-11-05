@@ -15,7 +15,6 @@ const ExcelCRUD = () => {
   const itemsPerPage = 12;
   const pagesToShow = 4;
 
-  // Load data from the server
   const loadExcelData = async () => {
     try {
       const response = await axios.get("http://localhost:5003/api/data");
@@ -29,28 +28,42 @@ const ExcelCRUD = () => {
     loadExcelData();
   }, []);
 
-  // Handle input change for form
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Save or update data
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const formData = new FormData();
+      formData.append("image", file);
+
+      try {
+        const response = await axios.post("http://localhost:5003/api/upload", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+        setFormData((prev) => ({ ...prev, Image: response.data.imageUrl }));
+      } catch (error) {
+        console.error("Error uploading image:", error);
+      }
+    }
+  };
+
   const handleSave = async () => {
     const updatedData = [...data];
     if (editingIndex >= 0) {
-      updatedData[editingIndex] = formData; // Update existing item
+      updatedData[editingIndex] = formData;
     } else {
-      updatedData.push(formData); // Add new item
+      updatedData.unshift(formData); // Add new item to the beginning
     }
     setData(updatedData);
     setFormData({ Image: "", Title: "", Description: "" });
     setEditingIndex(-1);
-    setShowOffcanvas(false); // Close offcanvas after saving
+    setShowOffcanvas(false);
     await updateExcelData(updatedData);
   };
 
-  // Edit item: open form with current data in offcanvas
   const handleEdit = (index) => {
     const itemToEdit = data[index];
     setFormData({
@@ -59,17 +72,21 @@ const ExcelCRUD = () => {
       Description: itemToEdit.Description || "",
     });
     setEditingIndex(index);
-    setShowOffcanvas(true); // Open offcanvas
+    setShowOffcanvas(true);
   };
 
-  // Delete item
+  const handleAddNew = () => {
+    setFormData({ Image: "", Title: "", Description: "" });
+    setEditingIndex(-1); // Ensure we're not editing an existing item
+    setShowOffcanvas(true);
+  };
+
   const handleDelete = async (index) => {
-    const updatedData = data.filter((_, i) => i !== index); // Filter out the item to delete
+    const updatedData = data.filter((_, i) => i !== index);
     setData(updatedData);
-    await updateExcelData(updatedData); // Update backend
+    await updateExcelData(updatedData);
   };
 
-  // Update data on the backend
   const updateExcelData = async (updatedData) => {
     try {
       await axios.post("http://localhost:5003/api/data", updatedData);
@@ -79,7 +96,6 @@ const ExcelCRUD = () => {
     }
   };
 
-  // Pagination controls
   const handlePageChange = (page) => setCurrentPage(page);
   const totalPages = Math.ceil(data.length / itemsPerPage);
   const currentData = data.slice(
@@ -87,44 +103,38 @@ const ExcelCRUD = () => {
     currentPage * itemsPerPage
   );
 
-  // Calculate page range for pagination buttons
   const startPage = Math.max(
     1,
-    Math.min(
-      totalPages - pagesToShow + 1,
-      currentPage - Math.floor(pagesToShow / 2)
-    )
+    Math.min(totalPages - pagesToShow + 1, currentPage - Math.floor(pagesToShow / 2))
   );
   const endPage = Math.min(totalPages, startPage + pagesToShow - 1);
-  const pageNumbers = Array.from(
-    { length: endPage - startPage + 1 },
-    (_, i) => startPage + i
-  );
+  const pageNumbers = Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
 
   return (
     <div className="container mt-4">
+      {/* Add New Item Button */}
+      <div className="d-flex justify-content-end mb-3">
+        <Button variant="primary" onClick={handleAddNew}>Add New Item</Button>
+      </div>
+
       <div className="row mt-4">
         {currentData.map((item, index) => (
           <div key={index} className="col-lg-3 col-md-4 col-sm-6 mb-4">
             <div className="card h-100">
-              <img src={item.Image} alt="Card" className="card-img-top" />
+              <img src={item.Image} alt="Card" className="card-img-top" height={200} width={200} />
               <div className="card-body">
                 <h5 className="card-title">{item.Title}</h5>
                 <p className="card-text">{item.Description}</p>
                 <Button
                   variant="secondary"
-                  onClick={() =>
-                    handleEdit((currentPage - 1) * itemsPerPage + index)
-                  }
+                  onClick={() => handleEdit((currentPage - 1) * itemsPerPage + index)}
                 >
                   Edit
                 </Button>
                 <Button
                   variant="danger"
                   className="ms-2"
-                  onClick={() =>
-                    handleDelete((currentPage - 1) * itemsPerPage + index)
-                  }
+                  onClick={() => handleDelete((currentPage - 1) * itemsPerPage + index)}
                 >
                   Delete
                 </Button>
@@ -133,20 +143,9 @@ const ExcelCRUD = () => {
           </div>
         ))}
       </div>
+
       {/* Pagination controls */}
       <div className="d-flex justify-content-end mt-3 mb-5">
-        {/* <Button
-          disabled={currentPage === 1}
-          onClick={() => handlePageChange(1)}
-        >
-          First
-        </Button>
-        <Button
-          disabled={currentPage === 1}
-          onClick={() => handlePageChange(currentPage - 1)}
-        >
-          Previous
-        </Button> */}
         {pageNumbers.map((page) => (
           <Button
             key={page}
@@ -173,27 +172,16 @@ const ExcelCRUD = () => {
       </div>
 
       {/* Offcanvas for Add/Edit Form */}
-      <Offcanvas
-        show={showOffcanvas}
-        onHide={() => setShowOffcanvas(false)}
-        placement="end"
-      >
+      <Offcanvas show={showOffcanvas} onHide={() => setShowOffcanvas(false)} placement="end">
         <Offcanvas.Header closeButton>
-          <Offcanvas.Title>
-            {editingIndex >= 0 ? "Edit Item" : "Add New Item"}
-          </Offcanvas.Title>
+          <Offcanvas.Title>{editingIndex >= 0 ? "Edit Item" : "Add New Item"}</Offcanvas.Title>
         </Offcanvas.Header>
         <Offcanvas.Body>
           <Form>
             <Form.Group className="mb-3">
-              <Form.Label>Image URL</Form.Label>
-              <Form.Control
-                type="text"
-                name="Image"
-                value={formData.Image}
-                onChange={handleInputChange}
-                placeholder="Enter image URL"
-              />
+              <Form.Label>Image</Form.Label>
+              <Form.Control type="file" onChange={handleFileChange} />
+              {formData.Image && <img src={formData.Image} alt="Preview" className="mt-2" style={{ width: '100%' }} />}
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Title</Form.Label>
