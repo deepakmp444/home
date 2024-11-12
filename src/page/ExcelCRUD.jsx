@@ -180,9 +180,9 @@ const ExcelCRUD = () => {
                   </Button>
                   <a
                     href={item.Image}
-                    download
                     className="btn btn-outline-primary btn-sm ms-2"
                     target="_blank"
+                    download
                   >
                     Download
                   </a>
