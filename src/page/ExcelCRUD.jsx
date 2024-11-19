@@ -31,9 +31,19 @@ const ExcelCRUD = () => {
     loadExcelData();
   }, []);
 
+  // Reset page to 1 whenever searchTerm changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm]);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+    setCurrentPage(1);
   };
 
   const handleFileChange = async (e) => {
@@ -134,14 +144,14 @@ const ExcelCRUD = () => {
   return (
     <div className="container mt-4">
       {/* Search bar */}
-      <div className="d-flex align-items-center gap-2 mb-3">
+      <div className="d-flex justify-content-between mb-3">
         <Form.Control
           type="text"
           placeholder="Search by title"
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={handleSearchChange}
           size="sm"
-          style={{ maxWidth: "200px" }}
+          style={{ maxWidth: "300px" }}
         />
         <Button variant="primary" onClick={handleAddNew} size="sm">
           Add New
