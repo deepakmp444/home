@@ -188,14 +188,19 @@ const ExcelCRUD = () => {
                   >
                     Delete
                   </Button>
-                  <a
-                    href={item.Image}
+                  <button
                     className="btn btn-outline-primary btn-sm ms-2"
-                    target="_blank"
-                    download
+                    onClick={() =>
+                      window.open(
+                        `http://localhost:5003/api/download/${item.Image.split(
+                          "/"
+                        ).pop()}`,
+                        "_blank"
+                      )
+                    }
                   >
                     Download
-                  </a>
+                  </button>
                 </div>
               </div>
             </div>
